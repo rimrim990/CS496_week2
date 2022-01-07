@@ -1,64 +1,44 @@
 const { Group } = require('../lib/database');
 
-const insertGroup = async (name, member) => {
-    try {
-        const group = new Group({
-            "name": name,
-            "member": member
-        });
-        await group.save();
-    } catch (err) {
-        console.log(err);
-    }
+const insertGroup = async (name, memberList) => {
+    const group = new Group({
+        "name": name,
+        "member": memberList
+    });
+    await group.save();
 };
 
 const getAllGroups = async () => {
-    try {
-        const groupList = await Group.find().exec();
-        return groupList;
-    } catch (err) {
-        console.log(err);
-    }
-}
+    const groupList = await Group.find().exec();
+    return groupList;
+};
 
 const getGroupById = async (id) => {
-    try {
-        const query = { _id: id };
-        const group = await Group.findOne(query).exec();
-
-        return group;
-    } catch(err) {
-        console.log(err);
-    }
+    const query = { _id: id };
+    const group = await Group.findOne(query).exec();
+    return group;
 };
 
 const getGroupsByUserId = async (userId) => {
-    try {
-        const query = { member: { $contains: userId }};
-        const groupList = await Group.find(query).exec();
-
-        return groupList;
-    } catch (err) {
-        console.log(err);
-    }
+    const query = { member: { $contains: userId }};
+    const groupList = await Group.find(query).exec();
+    return groupList;
 };
 
-const updateGroup = async (groupId, userId) => {
-    try {
-        const query = { _id: groupId };
-        await Group.update(query, { $push: { member: userId }}, done);
-    } catch (err) {
-        console.log(err);
-    }
+const getMembersRanking = async (id) => {
+    const query = { _id: groupId };
+    const memberList = await Group.findOne(query).sort('-member.total').exec();
+    return memberList;
+};
+
+const updateGroup = async (groupId, user) => {
+    const query = { _id: groupId };
+    await Group.updateOne(query, { $push: { member: user }});
 };
 
 const deleteGroup = async (id) => {
-    try {
-        const query = { _id: id };
-        await Group.delete(query);
-    } catch (err) {
-        console.log(err);
-    }
+    const query = { _id: id };
+    await Group.delete(query);
 };
 
 module.exports = {
