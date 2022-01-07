@@ -2,8 +2,10 @@ const express = require('express');
 const groupDAO = require('../DAO/group');
 
 const router = express.Router();
-const { getAllGroups, insertGroup, getGroupById, getGroupsByUserId, updateGroup, deleteGroup } = groupDAO;
+const { getAllGroups, insertGroup, getGroupById, getGroupsByUserId, 
+    updateGroupMember, updateGroupName, deleteGroup, deleteMemberById } = groupDAO;
 
+// get group list
 router.get('/', async (req, res, next) => {
     try {
         const groupList = await getAllGroups();
@@ -14,6 +16,7 @@ router.get('/', async (req, res, next) => {
     }
 })
 
+// create group
 router.post('/', async (req, res, next) => {
     try {
         const { name, member } = req.body;
@@ -25,6 +28,7 @@ router.post('/', async (req, res, next) => {
     } 
 });
 
+// get group by group id
 router.get('/:groupId(\\d+)', async (req, res, next) => {
     try {
         const { groupId } = req.params;
@@ -37,10 +41,11 @@ router.get('/:groupId(\\d+)', async (req, res, next) => {
     }  
 });
 
-router.get('/list/userId(\\d+)', async (req, res, next) => {
+// get groups by user id
+router.get('/list/:userId(\\d+)', async (req, res, next) => {
     try {
         const { userId } = req.params;
-        const id = parseInt(usrId);
+        const id = parseInt(userId);
         const groupList = await getGroupsByUserId(id);
         res.send(groupList);
     } catch (err) {
@@ -49,31 +54,59 @@ router.get('/list/userId(\\d+)', async (req, res, next) => {
     } 
 });
 
-router.post('/groupId(\\d+)', async (req, res, next) => {
+// update group title
+router.post('/name/:groupId(\\d+)', async (req, res, next) => {
     try {
         const { groupId } = req.params;
-        const { userId } = req.body;
+        const { name } = req.body;
         const gId = parseInt(groupId);
-        const uId = parseInt(userId);
-        updateGroup(gId, uId);
-        res.send('');
+        updateGroupName(gId, name);
+        res.send('update success!');
     } catch (err) {
         console.log(err);
         next(err);
     }
 });
 
-router.delete('/groupId(\\d+)', async (req, res, next) => {
+// update group member
+router.post('/member/:groupId(\\d+)', async (req, res, next) => {
     try {
         const { groupId } = req.params;
-    const id = parseInt(groupId);
-    deleteGroup(id);
-    res.send('');
+        const { _id, username, displayName } = req.body;
+        const gId = parseInt(groupId);
+        const uId = parseInt(_id);
+        updateGroupMember(gId, uId, username, displayName);
+        res.send('update success!');
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
+});
+
+// delete a group
+router.delete('/:groupId(\\d+)', async (req, res, next) => {
+    try {
+        const { groupId } = req.params;
+        const id = parseInt(groupId);
+        deleteGroup(id);
+        res.send('delection success!');
     } catch (err) {
         console.log(err);
         return next(err);
     }
 });
+
+// delete a member
+router.delete('/member/:userId(\\d+)', async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+        const uId = parseInt(userId);
+        deleteMemberById(uId);
+    } catch (err) {
+        console.log(err);
+        return next(err);
+    }
+})
 
 module.exports = router;
 

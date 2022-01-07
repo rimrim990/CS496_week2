@@ -3,7 +3,7 @@ const autoIncrement = require('mongoose-auto-increment');
 require('dotenv').config();
 
 const { MONGO_URI } = process.env;
-const connection = mongoose.connect(MONGO_URI)
+mongoose.connect(MONGO_URI)
 .then(() => {
 	console.log("Connected to MongoDB");
 })
@@ -65,6 +65,7 @@ const Group = mongoose.model('Group', groupSchema);
 const Running = mongoose.model('Running', runningSchema);
 
 module.exports = {
+	mongoose,
 	User,
 	Group,
 	Running,

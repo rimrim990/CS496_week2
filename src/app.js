@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const session = require("express-session");
+const { mongoose } = require("./lib/database");
 require('dotenv').config();
 
 const SESSION_SECRETE = process.env.SESSION_SECRETE;
@@ -29,7 +30,9 @@ app.use(
   session({
     secret: SESSION_SECRETE,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
+    store: require("mongoose-session")(mongoose), // session 저장 장소 (Mongodb)
+    cookie: {maxAge: (3.6e+6)*24} // 24시간 뒤 만료 (자동 삭제)
   })
 );
 
