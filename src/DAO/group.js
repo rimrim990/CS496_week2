@@ -1,11 +1,13 @@
 const { Group } = require('../lib/database');
 
-const insertGroup = async (name, memberList) => {
+const insertGroup = async (name, groupOwner, memberList) => {
     const group = new Group({
         "name": name,
+        "owner": groupOwner,
         "member": memberList
     });
     await group.save();
+    return group;
 };
 
 const getAllGroups = async () => {
@@ -46,9 +48,9 @@ const updateGroupName = async (groupId, name) => {
     await Group.updateOne(query, { $set: {name: name }});
 }
 
-const deleteGroup = async (id) => {
-    const query = { _id: id };
-    await Group.delete(query);
+const deleteGroup = async (gId) => {
+    const query = { _id: gId };
+    await Group.findOneAndDelete(query);
 };
 
 /* TODO */

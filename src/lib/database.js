@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const autoIncrement = require('mongoose-auto-increment');
+const { generateToken } = require('./token');
 require('dotenv').config();
 
 const { MONGO_URI } = process.env;
@@ -27,10 +28,26 @@ userSchema.plugin(autoIncrement.plugin, {
 	startAt: 1,
 	increment: 1
 });
+userSchema.method.generateToken = function() {
+	// JWT 에 담을 내용
+	const payload = {
+		_id: this._id,
+		username: this.username,
+		password: this.password,
+	};
+
+	return generateToken(payload);
+}
 
 const groupSchema = new mongoose.Schema({
 	_id: { type: Number, required: true, unique: true },
 	name: { type: String, required: true },
+	owner: { type: {
+		_id: Number,
+		username: String,
+		displayName: String,
+		photoUrl: String,
+	}, required: true },
 	member: { type: [{
 		_id: Number,
 		username: String,

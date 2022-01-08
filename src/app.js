@@ -3,11 +3,12 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const session = require("express-session");
-const { mongoose } = require("./lib/database");
+//const session = require("express-session");
+//const { mongoose } = require("./lib/database");
 require('dotenv').config();
 
-const SESSION_SECRETE = process.env.SESSION_SECRETE;
+// const SESSION_SECRETE = process.env.SESSION_SECRETE;
+// const SECRET = process.env.SECRET;
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -26,6 +27,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// app.set('jwt-secret', SECRET);
+/*
 app.use(
   session({
     secret: SESSION_SECRETE,
@@ -35,6 +38,7 @@ app.use(
     cookie: {maxAge: (3.6e+6)*24} // 24시간 뒤 만료 (자동 삭제)
   })
 );
+*/
 
 app.use('/', indexRouter);
 app.use('/', authRouter);
