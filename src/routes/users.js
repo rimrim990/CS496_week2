@@ -67,6 +67,7 @@ router.get(`/:userName`, async function(req, res, next) {
   }
 })
 
+
 // delete user
 router.delete(`/:userId(\\d+)`, async function(req, res, next) {
   try {

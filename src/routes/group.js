@@ -106,6 +106,7 @@ router.post('/member/:groupId(\\d+)', async (req, res, next) => {
 // join with group code
 router.post('/join', async (req, res, next) => {
     try {
+        const access_token = req.get('access-token');
         const { groupName, groupCode } = req.body;
         
         const decoded = await verifyToken(access_token);
@@ -118,9 +119,9 @@ router.post('/join', async (req, res, next) => {
             displayName: userObj.displayName,
             photoUrl: userObj.photoUrl,
         };
-        const result = updateGroupMember(groupName, groupCode, uId, username, displayName);
+        const result = await updateGroupMember(groupName, groupCode, joinUser._id, joinUser.username, joinUser.displayName);
         res.json(result);
-        res.send('join success!');
+        // res.send('join success!');
     } catch (err) {
         console.log(err);
         next(err);
