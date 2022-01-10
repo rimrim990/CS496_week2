@@ -35,14 +35,16 @@ const getMembersRanking = async (id) => {
     return memberList;
 };
 
-const updateGroupMember = async (groupName, groupCode, userId, username, displayName) => {
+const updateGroupMember = async (groupName, groupCode, userId, username, displayName, totalDistance) => {
     const query = { name: groupName, groupCode: groupCode };
+    console.log("update member : " + totalDistance);
     await Group.updateOne(query, {
         $push: {
             member: {
                 "_id": userId,
                 "username": username,
                 "displayName": displayName,
+                "totalDisatnce": totalDistance
             }
         }
     });

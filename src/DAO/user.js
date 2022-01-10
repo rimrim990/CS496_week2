@@ -33,6 +33,15 @@ const updateUser = async (id, displayName) => {
 	await User.update(query, { $set: { displayName: displayName }});
 };
 
+
+const updateDistance = async (id, distance) => {
+    const query = { _id: id };
+    const user = await User.findOne(query).exec();
+    distance *= 1
+    await User.updateOne(query, { $set: { totalDistance: (user.totalDistance + distance) } });
+};
+
+
 const deleteUser = async (id) => {
 	const query = { _id: id };
 	await User.remove(query);
@@ -44,5 +53,6 @@ module.exports = {
 	getUserById,
 	getUserByUsername,
 	updateUser,
+	updateDistance,
 	deleteUser,
 };

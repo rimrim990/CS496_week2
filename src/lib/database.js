@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema({
 	displayName: { type: String, required: true, unique: true },
 	password: { type: String, required: true },
 	photoUrl: String,
+	totalDistance: { type: Number, default: 0 },
 	joinedAt: { type: String, required: true, default: () => new Date().toJSON().slice(0, 10) }
 });
 userSchema.plugin(autoIncrement.plugin, {
@@ -49,6 +50,7 @@ const groupSchema = new mongoose.Schema({
 			username: String,
 			displayName: String,
 			photoUrl: String,
+			totalDistance: Number,
 		}, required: true
 	},
 	member: {
@@ -57,6 +59,7 @@ const groupSchema = new mongoose.Schema({
 			username: String,
 			displayName: String,
 			photoUrl: String,
+			totalDistance: Number,
 		}], required: true
 	},
 	createdAt: { type: String, required: true, default: () => new Date().toJSON().slice(0, 10) },

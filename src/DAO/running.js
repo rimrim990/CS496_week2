@@ -1,28 +1,36 @@
 const { Running } = require('../lib/database');
 
+const getAllRunnings = async () => {
+    const runnings = await Running.find().exec();
+    return runnings;
+};
+
 const insertRunning = async (userId) => {
     const running = new Running({
-            "userId": userId
+        "userId": userId
     });
     await running.save();
 }
 
-const updateDailyById = async (id, daily) => {
+const updateDailyById = async (id, distance) => {
     const query = { _id: id };
-    await Running.updateOne(query, { $set: { daily: daily }});
+    await Running.updateOne(query, { $set: { daily: distance } });
 };
 
-const updateMonthlyById = async (id, monthly) => {
+const updateMonthlyById = async (id, distance) => {
     const query = { _id: id };
-    await Running.updateOne(query, { $set: { monthly: monthly }});
+    await Running.updateOne(query, { $set: { monthly: distance } });
 };
 
-const updateTotalById = async (id, total) => {
+const updateTotalById = async (id, distance) => {
     const query = { _id: id };
-    await Running.updateOne(query, { $set: { total: total }});
+    const user = await Running.findOne(query).exec();
+    distance *= 1
+    await Running.updateOne(query, { $set: { total: (user.total + distance) } });
 };
 
 module.exports = {
+    getAllRunnings,
     insertRunning,
     updateDailyById,
     updateMonthlyById,
