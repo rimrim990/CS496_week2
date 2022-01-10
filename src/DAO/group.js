@@ -23,7 +23,7 @@ const getGroupById = async (id) => {
 
 const getGroupsByUserId = async (userId) => {
     const id = parseInt(userId);
-    const query = { member: { $elemMatch: { _id: id }}};
+    const query = { member: { $elemMatch: { _id: id } } };
     const groupList = await Group.find(query).exec();
     return groupList;
 };
@@ -34,18 +34,22 @@ const getMembersRanking = async (id) => {
     return memberList;
 };
 
-const updateGroupMember = async (groupId, userId, username, displayName) => {
-    const query = { _id: groupId };
-    await Group.updateOne(query, { $push: { member: {
-        "_id": userId,
-        "username": username,
-        "displayName": displayName,
-    }}});
+const updateGroupMember = async (groupName, groupCode, userId, username, displayName) => {
+    const query = { name: groupName, groupCode: groupCode };
+    await Group.updateOne(query, {
+        $push: {
+            member: {
+                "_id": userId,
+                "username": username,
+                "displayName": displayName,
+            }
+        }
+    });
 };
 
 const updateGroupName = async (groupId, name) => {
     const query = { _id: groupId };
-    await Group.updateOne(query, { $set: {name: name }});
+    await Group.updateOne(query, { $set: { name: name } });
 }
 
 const deleteGroup = async (gId) => {
@@ -55,8 +59,8 @@ const deleteGroup = async (gId) => {
 
 /* TODO */
 const deleteMemberById = async (id) => {
-    const query = { member: { $elemMatch: { _id: id }}};
-    await Group.findAndUpdate(query, {$pop: { member: {$elemMatch: {_id: id}}}});
+    const query = { member: { $elemMatch: { _id: id } } };
+    await Group.findAndUpdate(query, { $pop: { member: { $elemMatch: { _id: id } } } });
 }
 
 module.exports = {

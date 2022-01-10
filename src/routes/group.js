@@ -4,7 +4,7 @@ const { getUserById } = require('../DAO/user');
 const { verifyToken } = require('../lib/token');
 
 const router = express.Router();
-const { getAllGroups, insertGroup, getGroupById, getGroupsByUserId, 
+const { getAllGroups, insertGroup, getGroupById, getGroupsByUserId,
     updateGroupMember, updateGroupName, deleteGroup, deleteMemberById } = groupDAO;
 
 // get group list
@@ -41,7 +41,7 @@ router.post('/', async (req, res, next) => {
     } catch (err) {
         console.log(err);
         return next(err);
-    } 
+    }
 });
 
 // get group by group id
@@ -55,7 +55,7 @@ router.get('/:groupId(\\d+)', async (req, res, next) => {
     } catch (err) {
         console.log(err);
         return next(err);
-    }  
+    }
 });
 
 // get groups by user id
@@ -69,7 +69,7 @@ router.get('/list/:userId(\\d+)', async (req, res, next) => {
     } catch (err) {
         console.log(err);
         next(err);
-    } 
+    }
 });
 
 // update group title
@@ -97,6 +97,30 @@ router.post('/member/:groupId(\\d+)', async (req, res, next) => {
         const uId = parseInt(_id);
         updateGroupMember(gId, uId, username, displayName);
         res.send('update success!');
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
+});
+
+// join with group code
+router.post('/join', async (req, res, next) => {
+    try {
+        const { groupName, groupCode } = req.body;
+        
+        const decoded = await verifyToken(access_token);
+        const userObj = await getUserById(decoded._id);
+        if (!userObj) throw new Error("UNAUTHORIZED");
+        
+        const joinUser = {
+            _id: userObj._id,
+            username: userObj.username,
+            displayName: userObj.displayName,
+            photoUrl: userObj.photoUrl,
+        };
+        const result = updateGroupMember(groupName, groupCode, uId, username, displayName);
+        res.json(result);
+        res.send('join success!');
     } catch (err) {
         console.log(err);
         next(err);

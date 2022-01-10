@@ -54,7 +54,8 @@ const groupSchema = new mongoose.Schema({
 		displayName: String,
 		photoUrl: String,
 	}], required: true },
-	createdAt: { type: String, required: true, default: () => new Date().toJSON().slice(0,10) }
+	createdAt: { type: String, required: true, default: () => new Date().toJSON().slice(0,10) },
+	groupCode: { type: String, required: true, default: () => Math.random().toString(36).slice(2,8)}
 });
 groupSchema.plugin(autoIncrement.plugin, {
 	model: 'Group',
