@@ -5,22 +5,22 @@ require('dotenv').config();
 
 const { MONGO_URI } = process.env;
 mongoose.connect(MONGO_URI)
-.then(() => {
-	console.log("Connected to MongoDB");
-})
-.catch((err) => {
-	console.log(err);
-});
+	.then(() => {
+		console.log("Connected to MongoDB");
+	})
+	.catch((err) => {
+		console.log(err);
+	});
 
 autoIncrement.initialize(mongoose.connection);
 
 const userSchema = new mongoose.Schema({
 	_id: { type: Number, required: true, unique: true },
-	username: { type: String, required: true , unique: true },
+	username: { type: String, required: true, unique: true },
 	displayName: { type: String, required: true, unique: true },
 	password: { type: String, required: true },
 	photoUrl: String,
-	joinedAt: { type: String, required: true, default: () => new Date().toJSON().slice(0,10) } 
+	joinedAt: { type: String, required: true, default: () => new Date().toJSON().slice(0, 10) }
 });
 userSchema.plugin(autoIncrement.plugin, {
 	model: 'User',
@@ -28,7 +28,7 @@ userSchema.plugin(autoIncrement.plugin, {
 	startAt: 1,
 	increment: 1
 });
-userSchema.method.generateToken = function() {
+userSchema.method.generateToken = function () {
 	// JWT 에 담을 내용
 	const payload = {
 		_id: this._id,
@@ -42,20 +42,25 @@ userSchema.method.generateToken = function() {
 const groupSchema = new mongoose.Schema({
 	_id: { type: Number, required: true, unique: true },
 	name: { type: String, required: true },
-	owner: { type: {
-		_id: Number,
-		username: String,
-		displayName: String,
-		photoUrl: String,
-	}, required: true },
-	member: { type: [{
-		_id: Number,
-		username: String,
-		displayName: String,
-		photoUrl: String,
-	}], required: true },
-	createdAt: { type: String, required: true, default: () => new Date().toJSON().slice(0,10) },
-	groupCode: { type: String, required: true, default: () => Math.random().toString(36).slice(2,8)}
+	info: { type: String, required: true },
+	owner: {
+		type: {
+			_id: Number,
+			username: String,
+			displayName: String,
+			photoUrl: String,
+		}, required: true
+	},
+	member: {
+		type: [{
+			_id: Number,
+			username: String,
+			displayName: String,
+			photoUrl: String,
+		}], required: true
+	},
+	createdAt: { type: String, required: true, default: () => new Date().toJSON().slice(0, 10) },
+	groupCode: { type: String, required: true, default: () => Math.random().toString(36).slice(2, 8) }
 });
 groupSchema.plugin(autoIncrement.plugin, {
 	model: 'Group',

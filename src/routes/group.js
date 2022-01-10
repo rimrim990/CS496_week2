@@ -23,7 +23,7 @@ router.get('/', async (req, res, next) => {
 // 그룹 생성하기 - 생성 요청자가 소유자가 됨
 router.post('/', async (req, res, next) => {
     try {
-        const { name } = req.body;
+        const { name, info } = req.body;
         const access_token = req.get('access-token');
         const decoded = await verifyToken(access_token);
 
@@ -36,7 +36,7 @@ router.post('/', async (req, res, next) => {
             displayName: userObj.displayName,
             photoUrl: userObj.photoUrl,
         };
-        const result = await insertGroup(name, groupOwner, [groupOwner]);
+        const result = await insertGroup(name, info, groupOwner, [groupOwner]);
         res.json(result);
     } catch (err) {
         console.log(err);
@@ -126,7 +126,7 @@ router.post('/member/:groupId(\\d+)', async (req, res, next) => {
 router.post('/join', async (req, res, next) => {
     try {
         const access_token = req.get('access-token');
-        const { groupName, groupCode } = req.body;
+        const { name, code } = req.body;
         
         const decoded = await verifyToken(access_token);
         const userObj = await getUserById(decoded._id);
@@ -138,8 +138,8 @@ router.post('/join', async (req, res, next) => {
             displayName: userObj.displayName,
             photoUrl: userObj.photoUrl,
         };
-        const result = await updateGroupMember(groupName, groupCode, joinUser._id, joinUser.username, joinUser.displayName);
-        res.json(result);
+        const result = await updateGroupMember(name, code, joinUser._id, joinUser.username, joinUser.displayName);
+        res.send(result);
         // res.send('join success!');
     } catch (err) {
         console.log(err);

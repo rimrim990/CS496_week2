@@ -1,8 +1,9 @@
 const { Group } = require('../lib/database');
 
-const insertGroup = async (name, groupOwner, memberList) => {
+const insertGroup = async (name, info, groupOwner, memberList) => {
     const group = new Group({
         "name": name,
+        "info": info,
         "owner": groupOwner,
         "member": memberList
     });
@@ -45,6 +46,9 @@ const updateGroupMember = async (groupName, groupCode, userId, username, display
             }
         }
     });
+    const group = await Group.findOne(query).exec();
+    console.log(group);
+    return group;
 };
 
 const updateGroupName = async (groupId, name) => {
