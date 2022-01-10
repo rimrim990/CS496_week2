@@ -65,7 +65,26 @@ router.get('/list/:userId(\\d+)', async (req, res, next) => {
         const { userId } = req.params;
         const id = parseInt(userId);
         const groupList = await getGroupsByUserId(id);
-        res.send(groupList);
+        res.json(groupList);
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
+});
+
+// get groups by user id
+// user가 속한 모든 그룹 가져오기
+router.get('/list', async (req, res, next) => {
+    try {
+        const access_token = req.get('access-token');
+        const userObj = await verifyToken(access_token);
+
+        console.log(userObj);
+        
+        if (!userObj) throw new Error('UNAUTHORIZED');
+
+        const groupList = await getGroupsByUserId(userObj._id);
+        res.json(groupList);
     } catch (err) {
         console.log(err);
         next(err);
