@@ -35,6 +35,7 @@ router.post('/', async (req, res, next) => {
             username: userObj.username,
             displayName: userObj.displayName,
             photoUrl: userObj.photoUrl,
+            totalDistance: userObj.totalDistance,
         };
         const result = await insertGroup(name, info, groupOwner, [groupOwner]);
         res.json(result);
@@ -65,7 +66,7 @@ router.get('/list/:userId(\\d+)', async (req, res, next) => {
         const { userId } = req.params;
         const id = parseInt(userId);
         const groupList = await getGroupsByUserId(id);
-        res.json(groupList);
+        res.send(groupList);
     } catch (err) {
         console.log(err);
         next(err);
@@ -80,11 +81,25 @@ router.get('/list', async (req, res, next) => {
         const userObj = await verifyToken(access_token);
 
         console.log(userObj);
-        
+
         if (!userObj) throw new Error('UNAUTHORIZED');
 
         const groupList = await getGroupsByUserId(userObj._id);
         res.json(groupList);
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
+});
+
+// get user by user id
+router.get("/user/:userId(\\d+)", async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+        const uid = parseInt(userId);
+
+        const userObj = await getUserById(uid);
+        res.json(userObj);
     } catch (err) {
         console.log(err);
         next(err);
@@ -127,18 +142,20 @@ router.post('/join', async (req, res, next) => {
     try {
         const access_token = req.get('access-token');
         const { name, code } = req.body;
-        
+
         const decoded = await verifyToken(access_token);
         const userObj = await getUserById(decoded._id);
         if (!userObj) throw new Error("UNAUTHORIZED");
-        
+
         const joinUser = {
             _id: userObj._id,
             username: userObj.username,
             displayName: userObj.displayName,
             photoUrl: userObj.photoUrl,
+            totalDistance: userObj.totalDistance
         };
-        const result = await updateGroupMember(name, code, joinUser._id, joinUser.username, joinUser.displayName);
+        const result = await updateGroupMember(name, code, joinUser._id, joinUser.username, joinUser.displayName, joinUser.totalDistance);
+        console.log(joinUser.totalDistance)
         res.send(result);
         // res.send('join success!');
     } catch (err) {

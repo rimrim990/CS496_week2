@@ -1,8 +1,9 @@
 const express = require('express');
 const userDAO = require('../DAO/user');
+const { verifyToken } = require('../lib/token');
 
 const router = express.Router();
-const {insertUser, getAllUsers, updateUser, getUserById, getUserByUsername, deleteUser} = userDAO;
+const {insertUser, getAllUsers, updateUser, updateDistance, getUserById, getUserByUsername, deleteUser} = userDAO;
 
 // get user list
 router.get('/', async function(req, res, next) {
@@ -25,7 +26,32 @@ router.post(`/`, async function(req, res, next) {
     console.log(err);
     next(err);
   }
-}); 
+});
+
+// send data
+router.post('/data', async (req, res, next) => {
+  try {
+      const { distance } = req.body;
+      const access_token = req.get('access-token');
+      const decoded = await verifyToken(access_token);
+
+      const userObj = await getUserById(decoded._id);
+      if (!userObj) throw new Error("UNAUTHORIZED");
+
+      const user = {
+          _id: userObj._id,
+          username: userObj.username,
+          displayName: userObj.displayName,
+          totalDistance: userObj.totalDistance
+      };
+      console.log(user);
+      updateDistance(user._id, distance)
+      res.send(user);
+  } catch (err) {
+      console.log(err);
+      return next(err);
+  }
+});
 
 // update user
 router.post(`/:userId(\\d+)`, async function(req, res, next) {
