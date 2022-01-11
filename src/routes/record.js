@@ -9,11 +9,11 @@ const { insertRecord, getRecordByUserId, deleteRecordById, getAllRecords } = Rec
 router.post('/', async (req, res, next) => {
     try {
         const access_token = req.get('access-token');
-        const { distance, maxSpeed, time, pathMarkers, info } = req.body;
+        let { distance, maxSpeed, time, lan, lng, info } = req.body;
+        if (info == null) info = "";
         const userObj = await verifyToken(access_token);
         if (!getUserById(userObj._id)) throw new Error('UNAUTHORIZED');
-        console.log(userObj._id, distance, maxSpeed, time, pathMarkers);
-        const record = await insertRecord(userObj._id, distance, time, maxSpeed, pathMarkers, info);
+        const record = await insertRecord(userObj._id, distance, time, maxSpeed, lan, lng, info);
         res.json(record);
     } catch (err) {
         console.log(err);

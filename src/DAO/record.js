@@ -1,12 +1,13 @@
 const { Record } = require('../lib/database');
 
-const insertRecord = async (userId, distance, time, maxSpeed, pathMarks, info) => {
+const insertRecord = async (userId, distance, time, maxSpeed, lan, lng, info) => {
     const record = new Record({
         "userId": userId,
         "distance": distance,
         "time": time,
         "maxSpeed": maxSpeed,
-        "pathMarks": JSON.stringify(pathMarks),
+        "lan": lan,
+        "lng": lng,
         "info": info,
     });
 

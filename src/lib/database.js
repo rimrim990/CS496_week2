@@ -91,7 +91,9 @@ const recordSchema = new mongoose.Schema({
 	distance: { type: Number, required:true },
 	time: { type: Number, required:true },
 	maxSpeed: { type: Number, required: true },
-	pathMarks: { type: String, required: true },
+	lan : { type: [Number], require: true},
+	lng: { type: [Number], required: true },
+	// pathMarkers: { type: String, required: true },
 	createdAt: { type: String, default: () => new Date().toJSON().slice(0, 10)},
 	info: { type: String, required: true, default: "" },
 });
