@@ -11,6 +11,8 @@ const { insertRunning } = RunningDAO;
 // signin
 router.post('/signin', async (req, res, next) => {
     try {
+        console.log(req.body);
+        console.log(req.query);
         const { username, password } = req.body;
         let access_token = null;
 
