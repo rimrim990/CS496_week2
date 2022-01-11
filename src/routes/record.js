@@ -40,7 +40,7 @@ router.get('/', async (req, res, next) => {
         const userObj = verifyToken(access_token);
         if (!userObj) throw new Error('UNAUTHORIZED')
         const groupList = await getRecordByUserId(userObj._id);
-        return groupList;
+        res.json(groupList);
     } catch (err) {
         console.log(err);
         next(err);
