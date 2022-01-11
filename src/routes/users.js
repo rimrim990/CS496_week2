@@ -1,4 +1,5 @@
 const express = require('express');
+const { getGroupsByUserId, updateGroupMember } = require('../DAO/group');
 const userDAO = require('../DAO/user');
 const { verifyToken } = require('../lib/token');
 
@@ -44,9 +45,9 @@ router.post('/data', async (req, res, next) => {
           displayName: userObj.displayName,
           totalDistance: userObj.totalDistance
       };
-      console.log(user);
-      updateDistance(user._id, distance)
-      res.send(user);
+      const result = await updateDistance(user._id, distance);
+      console.log(result);
+      res.json(result);
   } catch (err) {
       console.log(err);
       return next(err);
