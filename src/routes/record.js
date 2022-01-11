@@ -4,20 +4,32 @@ const { getUserById } = require('../DAO/user');
 const { verifyToken } = require('../lib/token');
 
 const router = express.Router();
-const { insertRecord, getRecordByUserId, deleteRecordById } = RecordDAO;
+const { insertRecord, getRecordByUserId, deleteRecordById, getAllRecords } = RecordDAO;
 
 router.post('/', async (req, res, next) => {
     try {
         const access_token = req.get('access-token');
-        const { distance, maxSpeed, time, pathMarkers } = req.body();
-        const userObj = verifyToken(access_token);
+        const { distance, maxSpeed, time, pathMarkers, info } = req.body;
+        const userObj = await verifyToken(access_token);
         if (!getUserById(userObj._id)) throw new Error('UNAUTHORIZED');
-        await insertRecord(userObj._id, distance, time, maxSpeed, pathMarkers);
+        console.log(userObj._id, distance, maxSpeed, time, pathMarkers);
+        const record = await insertRecord(userObj._id, distance, time, maxSpeed, pathMarkers, info);
+        res.json(record);
     } catch (err) {
         console.log(err);
         next(err);
     }
     
+});
+
+router.get('/all', async (req, res, next) => {
+    try {
+        const records = await getAllRecords();
+        res.json(records);
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
 });
 
 router.delete(`/:recordId(\\d+)`, async (req, res, next) => {
@@ -37,7 +49,7 @@ router.delete(`/:recordId(\\d+)`, async (req, res, next) => {
 router.get('/', async (req, res, next) => {
     try {
         const access_token = req.get('access-token');
-        const userObj = verifyToken(access_token);
+        const userObj = await verifyToken(access_token);
         if (!userObj) throw new Error('UNAUTHORIZED')
         const groupList = await getRecordByUserId(userObj._id);
         res.json(groupList);

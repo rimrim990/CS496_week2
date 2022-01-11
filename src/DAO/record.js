@@ -1,21 +1,29 @@
 const { Record } = require('../lib/database');
 
-const insertRecord = async (userId, distance, time, maxSpeed, pathMarks) => {
+const insertRecord = async (userId, distance, time, maxSpeed, pathMarks, info) => {
     const record = new Record({
         "userId": userId,
         "distance": distance,
         "time": time,
         "maxSpeed": maxSpeed,
-        "pathMarks": pathMarks,
+        "pathMarks": JSON.stringify(pathMarks),
+        "info": info,
     });
+
     await record.save();
     return record;
+}
+
+const getAllRecords = async () => {
+    const recordList = await Record.find().exec();
+    return recordList;
 }
 
 const getRecordByUserId = async (userId) => {
     const query = { userId: userId };
     const recordList = await Record.find(query).exec();
-    return groupList;
+    console.log(recordList);
+    return recordList;
 }
 
 const deleteRecordById = async (recordId, userId) => {
@@ -27,4 +35,5 @@ module.exports = {
     insertRecord,
     getRecordByUserId,
     deleteRecordById,
+    getAllRecords,
 };

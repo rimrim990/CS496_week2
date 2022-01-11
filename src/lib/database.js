@@ -86,25 +86,21 @@ runningSchema.plugin(autoIncrement.plugin, {
 })
 
 const recordSchema = new mongoose.Schema({
-	_id: { type: Number, required:true, unique: true },
+	_id: { type: Number, required: true, unique: true },
 	userId: { type: Number, required:true },
 	distance: { type: Number, required:true },
 	time: { type: Number, required:true },
 	maxSpeed: { type: Number, required: true },
-	pathMarks: {
-		type: [{
-			lat: Number,
-			lng: Number,
-		}], required: true
-	},
-	createdAt: { type: String, default: () => new Date().toJSON().slice(0, 10)}
+	pathMarks: { type: String, required: true },
+	createdAt: { type: String, default: () => new Date().toJSON().slice(0, 10)},
+	info: { type: String, required: true, default: "" },
 });
 recordSchema.plugin(autoIncrement.plugin, {
 	model: 'Record',
-	fiield: '_id',
+	field: '_id',
 	startAt: 1,
 	increment: 1
-})
+});
 
 const User = mongoose.model('User', userSchema);
 const Group = mongoose.model('Group', groupSchema);
