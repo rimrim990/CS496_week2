@@ -72,12 +72,13 @@ groupSchema.plugin(autoIncrement.plugin, {
 	increment: 1
 });
 
+
 const runningSchema = new mongoose.Schema({
 	_id: { type: Number, required: true, unique: true },
 	userId: { type: Number, required: true, unique: true },
 	daily: Number,
 	montly: Number,
-	total: Number
+	total: Number,
 });
 runningSchema.plugin(autoIncrement.plugin, {
 	model: 'Running',
@@ -86,13 +87,37 @@ runningSchema.plugin(autoIncrement.plugin, {
 	increment: 1
 })
 
+const recordSchema = new mongoose.Schema({
+	_id: { type: Number, required:true, unique: true },
+	userId: { type: Number, required:true },
+	distance: { type: Number, required:true },
+	time: { type: Number, required:true },
+	maxSpeed: { type: Number, required: true },
+	pathMarks: {
+		type: [{
+			lat: Number,
+			lng: Number,
+		}], required: true
+	},
+	createdAt: { type: String, default: () => new Date().toJSON().slice(0, 10)}
+});
+recordSchema.plugin(autoIncrement.plugin, {
+	model: 'Record',
+	fiield: '_id',
+	startAt: 1,
+	increment: 1
+})
+
 const User = mongoose.model('User', userSchema);
 const Group = mongoose.model('Group', groupSchema);
 const Running = mongoose.model('Running', runningSchema);
+const Record = mongoose.model('Record', recordSchema);
+
 
 module.exports = {
 	mongoose,
 	User,
 	Group,
-	Running,
+//	Running,
+	Record,
 };

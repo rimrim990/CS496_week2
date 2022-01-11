@@ -37,7 +37,13 @@ const getMembersRanking = async (id) => {
 
 const updateGroupMember = async (groupName, groupCode, userId, username, displayName, totalDistance) => {
     const query = { name: groupName, groupCode: groupCode };
+
     console.log("update member : " + totalDistance);
+    const dup = await Group.findOne({'name': groupName, 'groupCode': groupCode, 'member._id': userId});
+    if (dup) {
+        throw new Error("UNAUTHORIZED");
+    }
+
     await Group.updateOne(query, {
         $push: {
             member: {
@@ -49,7 +55,6 @@ const updateGroupMember = async (groupName, groupCode, userId, username, display
         }
     });
     const group = await Group.findOne(query).exec();
-    console.log(group);
     return group;
 };
 
@@ -64,8 +69,8 @@ const deleteGroup = async (gId) => {
 };
 
 /* TODO */
-const deleteMemberById = async (id) => {
-    const query = { member: { $elemMatch: { _id: id } } };
+const deleteMemberById = async (uId, gId) => {
+    const query = { _id: gId, member: { $elemMatch: { _id: uId } } };
     await Group.findAndUpdate(query, { $pop: { member: { $elemMatch: { _id: id } } } });
 }
 
@@ -77,4 +82,5 @@ module.exports = {
     updateGroupMember,
     updateGroupName,
     deleteGroup,
+    deleteMemberById,
 };

@@ -192,11 +192,14 @@ router.delete('/:groupId(\\d+)', async (req, res, next) => {
 // delete a member
 // 그룹 나가기
 /* TODO: 선택된 그룹에서 탈퇴하기 */
-router.delete('/member/:userId(\\d+)', async (req, res, next) => {
+router.delete('/member/:groupId(\\d+)', async (req, res, next) => {
     try {
-        const { userId } = req.params;
-        const uId = parseInt(userId);
-        deleteMemberById(uId);
+        const { groupId } = req.params;
+        const gId = parseInt(groupId);
+        const access_token = req.get('access-token');
+        const userObj = await verifyToken(access_token);
+        const userId = userObj._id;
+        await deleteMemberById(userId, groupId);
     } catch (err) {
         console.log(err);
         return next(err);

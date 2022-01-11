@@ -15,6 +15,8 @@ var usersRouter = require('./routes/users');
 const runningRouter = require('./routes/running')
 const groupRouter = require('./routes/group');
 const authRouter = require('./routes/auth');
+const recordRouter = require('./routes/record');
+const { Record } = require('./lib/database');
 
 var app = express();
 
@@ -46,6 +48,7 @@ app.use('/', authRouter);
 app.use('/running', runningRouter);
 app.use('/users', usersRouter);
 app.use('/group', groupRouter);
+app.use('/record', recordRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
